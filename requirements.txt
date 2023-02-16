@@ -1,0 +1,9 @@
+pyrr
+moderngl
+numpy
+matplotlib
+tinyobjloader
+dearpygui
+luisa
+nlopt
+numexpr
