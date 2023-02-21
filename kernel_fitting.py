@@ -7,8 +7,8 @@ import numpy as np
 import luisa
 from luisa.mathtypes import *
 
-SIGMA_A = np.array([0.01, 0.01, 0.01], dtype=np.float32)
-SIGMA_S = np.array([2.0, 2.0, 2.0], dtype=np.float32)
+SIGMA_A = np.array([0.014, 0.01, 0.029], dtype=np.float32)
+SIGMA_S = np.array([3.8, 3.0, 3.5], dtype=np.float32)
 G = np.array([0.0, 0.0, 0.0], dtype=np.float32)
 ETA = np.array([1.3, 1.3, 1.3], dtype=np.float32)
 WIDTH = 0.03
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         opt.set_lower_bounds(np.zeros(GRID_WIDTH, dtype=np.float32))
         xopt = opt.optimize(np.ones(GRID_WIDTH, dtype=np.float32))
         kernel[:, i] = np.concatenate((xopt[::-1], xopt[1:]))
-        kernel[:, i] /= kernel[:, i].sum()
+    kernel /= np.max(np.sum(kernel, 0), 0)
     with open("include.glsl", "w") as f:
         f.write(f"#define KERNEL_WIDTH {2 * GRID_WIDTH - 1}\n")
         f.write(f"#define DMFP {scale}\n")
