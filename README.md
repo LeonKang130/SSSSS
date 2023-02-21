@@ -8,7 +8,7 @@ using another program, which basically runs a Monte-Carlo simulation over a smal
 
 The result is supposed to look as follows.
 
-![SSSSS Result](.\result.png)
+![SSSSS Result](https://github.com/LeonKang130/SSSSS/blob/main/result.png)
 
 Notice that the library *luisa* cannot yet be installed using command `pip install`, so if you run into any problem when
 trying to run this project, you may wish to download the library from
