@@ -46,7 +46,7 @@ directional_lights: List[DirLight] = []
 point_lights: List[PointLight] = []
 surface_lights: List[SurfaceLight] = []
 model_file = "resources/objects/bunny.obj"
-material = Material(Vector3([0.6, 0.6, 0.6]), Vector3([0.2, 0.2, 0.2]), 16.0, 0.3, Vector3([8.0, 8.0, 8.0]))
+material = Material(Vector3([0.6, 0.7, 0.6]), Vector3([0.2, 0.2, 0.2]), 16.0, 0.3, Vector3([8.0, 8.0, 8.0]))
 """
 Light format:
 Light XXX

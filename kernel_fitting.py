@@ -7,11 +7,11 @@ import numpy as np
 import luisa
 from luisa.mathtypes import *
 
-SIGMA_A = np.array([0.014, 0.01, 0.029], dtype=np.float32)
-SIGMA_S = np.array([3.8, 3.0, 3.5], dtype=np.float32)
+SIGMA_A = np.array([0.3, 0.01, 0.3], dtype=np.float32)
+SIGMA_S = np.array([5.0, 5.0, 5.0], dtype=np.float32)
 G = np.array([0.0, 0.0, 0.0], dtype=np.float32)
 ETA = np.array([1.3, 1.3, 1.3], dtype=np.float32)
-WIDTH = 0.03
+WIDTH = 0.2
 
 
 def calculate_diffuse_mean_free_path(sigma_a: np.ndarray, sigma_s: np.ndarray, g: np.ndarray,
@@ -37,7 +37,7 @@ def sample_radius(d: np.float32, x: np.ndarray) -> np.ndarray:
     return ne.evaluate('-3 * log(x - y) * d')
 
 
-GRID_WIDTH = 11
+GRID_WIDTH = 5
 NUM_SAMPLES = 100000000
 luisa.init('cuda')
 radii = luisa.Buffer.empty(NUM_SAMPLES, dtype=float)
@@ -56,9 +56,9 @@ def roll_out() -> None:
 
 def f(x: np.ndarray, grad: np.ndarray):
     """
-    :param x: array of parameters
-    :param grad: the array where the gradient is to be stored
-    :return: L2 loss
+    @param x: array of parameters
+    @param grad: the array where the gradient is to be stored
+    @return: L2 loss
     """
     arr = np.expand_dims(x, 1)
     diff = arr * arr.T - distribution
@@ -69,7 +69,7 @@ def f(x: np.ndarray, grad: np.ndarray):
 
 if __name__ == "__main__":
     dmfp = calculate_diffuse_mean_free_path(SIGMA_A, SIGMA_S, G, ETA).astype('f4')
-    scale = np.amax(dmfp)
+    scale = np.average(dmfp)
     dmfp /= (scale * WIDTH)
     kernel = np.empty((GRID_WIDTH * 2 - 1, 3), dtype=np.float32)
     rng = np.random.default_rng()
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         opt.set_lower_bounds(np.zeros(GRID_WIDTH, dtype=np.float32))
         xopt = opt.optimize(np.ones(GRID_WIDTH, dtype=np.float32))
         kernel[:, i] = np.concatenate((xopt[::-1], xopt[1:]))
-    kernel /= np.max(np.sum(kernel, 0), 0)
+    kernel /= np.sum(kernel, 0)
     with open("include.glsl", "w") as f:
         f.write(f"#define KERNEL_WIDTH {2 * GRID_WIDTH - 1}\n")
         f.write(f"#define DMFP {scale}\n")
